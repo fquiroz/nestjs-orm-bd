@@ -9,10 +9,11 @@ export class ProductService implements IProductService {
   constructor(private prisma: PrismaService) {}
 
   async getProduct(codigo: string) {
+  
     const product = await this.prisma.product.findUnique({
       where: { codigo: codigo },
     });
-    console.log('getProduct ---> ', product);
+   
     return product;
   }
 
@@ -30,7 +31,7 @@ export class ProductService implements IProductService {
     return this.prisma.product.delete({ where: { id } });
   }
   listProducts() {
-    return this.prisma.product.findMany({});
+    return this.prisma.product.findMany();
   }
 
   getProductWithCategoryActive() {
@@ -47,12 +48,12 @@ export class ProductService implements IProductService {
   }
 
   getProductWithSize() {
- /*    return this.prisma.product.findMany({
+    return this.prisma.product.findMany({
       where: {
         talle: {
           in: ['MEDIUM', 'LARGE'],
         },
       },
-    }); */
+    });
   }
 }

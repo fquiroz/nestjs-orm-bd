@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Category, Talle } from '@prisma/client';
+import {  Talle } from '@prisma/client';
 import { IsEnum, IsNumber, IsString, MaxLength } from 'class-validator';
 import { ETalle } from 'src/common/interfaces/product';
 
