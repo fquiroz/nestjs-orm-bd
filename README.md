@@ -25,12 +25,24 @@
 ## Description
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Backend REST API for Zafirus using NestJS, Prisma, PostgreSQL and Swagger.
 
 ## Installation
 
 ```bash
 $ npm install
 ```
+
+## Start a PostgreSQL database with docker using: docker-compose up -d.
+If you have a local instance of PostgreSQL running, you can skip this step. In this case, you will need to change the DATABASE_URL inside the .env file with a valid PostgreSQL connection string for your database.
+
+## Apply database migrations
+```bash
+$ npx prisma migrate dev
+```
+
+## Swagger API
+Access the project at http://localhost:3000/api
 
 ## Running the app
 
@@ -64,9 +76,8 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 
 ## Stay in touch
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- Author - [Fernando Quiroz](https://github.com/fquiroz)
+- Linkedin - [https://www.linkedin.com/in/fernando-quiroz-0541a529/](https://www.linkedin.com/in/fernando-quiroz-0541a529/)
 
 ## License
 

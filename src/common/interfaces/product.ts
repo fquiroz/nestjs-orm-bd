@@ -2,7 +2,7 @@ export interface IProduct {
   id: string;
   codigo: string;
   nombre: string;
-  id_categoria: number;
+  id_categoria: string;
   precio: number;
   talle: ETalle;
 }
