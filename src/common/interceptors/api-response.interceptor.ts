@@ -22,13 +22,9 @@ export class ApiResponseInterceptor implements NestInterceptor {
 
         let message = 'Error desconocido';
 
-        if (statusCode === HttpStatus.NOT_FOUND) {
-          message = 'No se encontraron resultados';
-        }
-
-        if (statusCode === HttpStatus.OK) {
-          message = 'Operación exitosa';
-        }
+        if (statusCode === HttpStatus.NOT_FOUND) message = 'No se encontraron resultados';
+        if (statusCode === HttpStatus.OK) message = 'Operación exitosa';
+        if (statusCode === HttpStatus.CREATED) message = 'Objeto creado';
 
         return {
           statusCode,

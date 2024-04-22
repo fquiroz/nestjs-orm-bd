@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   HttpStatus,
   NotFoundException,
   Param,
@@ -16,6 +17,8 @@ import { CreateProductDto } from '../dto/create-product.dto';
 import { ProductService } from '../service/product/product.service';
 import { UpdateProductDto } from '../dto/update-product.dto';
 import { ApiResponseInterceptor } from 'src/common/interceptors/api-response.interceptor';
+import { plainToInstance } from 'class-transformer';
+import { GetProductDto } from '../dto/get-product.dto';
 
 @ApiTags('Product')
 @Controller('product')
@@ -28,23 +31,25 @@ export class ProductController implements IProductService {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Get product by ID',
+    type: GetProductDto,
   })
-  async getProduct(@Param('codigo') codigo: string) {
+  async getProduct(@Param('codigo') codigo: string): Promise<GetProductDto> {
     const product = await this.productService.getProduct(codigo);
     if (!product) {
       throw new NotFoundException('No se encontraron datos');
     }
-    return product;
+    return plainToInstance(GetProductDto, product);
   }
 
   @Post()
   @ApiOperation({ summary: 'Create Product' })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     description: 'Create Product',
   })
   createProduct(@Body() product: CreateProductDto) {
-    return this.productService.createProduct(product);
+    const prod = this.productService.createProduct(product);
+    return plainToInstance(GetProductDto, prod);
   }
 
   @Patch(':id')
@@ -52,13 +57,18 @@ export class ProductController implements IProductService {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Update Product',
+    type: GetProductDto,
   })
-  updateProduct(
+  async updateProduct(
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
-  ) {
+  ): Promise<GetProductDto> {
     console.log('updateProduct id', id);
-    return this.productService.updateProduct(id, updateProductDto);
+    const product = await this.productService.updateProduct(
+      id,
+      updateProductDto,
+    );
+    return plainToInstance(GetProductDto, product);
   }
 
   @Get('all')
@@ -66,25 +76,31 @@ export class ProductController implements IProductService {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Get all product',
+    type: [GetProductDto],
   })
-  async listProducts() {
+  async listProducts(): Promise<GetProductDto[]> {
     const products = await this.productService.listProducts();
     console.log('products', products);
 
-    if (!products) {
+    if (!products || products.length === 0) {
       throw new NotFoundException('No se encontraron datos');
     }
-    return products;
+
+    return products.map((prod) => plainToInstance(GetProductDto, prod));
   }
 
   @Delete('/:id')
   @ApiOperation({ summary: 'Delete Product' })
   @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Delete aproduct by Id',
+    status: HttpStatus.NO_CONTENT,
+    description: 'Delete product by Id',
   })
-  deleteProduct(@Param('id') id: string) {
-    return this.productService.deleteProduct(id);
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteProduct(@Param('id') id: string) {
+    const result = await this.productService.deleteProduct(id);
+    if (!result) {
+      throw new NotFoundException('Product not found');
+    }
   }
 
   @Get('/category/active')
@@ -92,13 +108,14 @@ export class ProductController implements IProductService {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Get Product with category active',
+    type: [GetProductDto],
   })
   async getProductWithCategoryActive() {
     const products = await this.productService.getProductWithCategoryActive();
-    if (products.length < 1) {
+    if (!products || products.length === 0) {
       throw new NotFoundException('No se encontraron datos');
     }
-    return products;
+    return products.map((prod) => plainToInstance(GetProductDto, prod));
   }
 
   @Get('/sizes-medium-large')
@@ -106,12 +123,13 @@ export class ProductController implements IProductService {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Get Product with size MEDIUM or LARGE',
+    type: [GetProductDto],
   })
   async getProductWithSize() {
     const products = await this.productService.getProductWithSize();
-    if (products.length < 1) {
+    if (!products || products.length === 0) {
       throw new NotFoundException('No se encontraron datos');
     }
-    return products;
+    return products.map((prod) => plainToInstance(GetProductDto, prod));
   }
 }

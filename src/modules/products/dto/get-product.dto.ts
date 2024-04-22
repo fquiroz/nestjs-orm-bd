@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString } from 'class-validator';
-import { ETalle } from 'src/common/interfaces/product';
+import { Talle } from '@prisma/client';
+import { IsEnum, IsNumber, IsString } from 'class-validator';
 
 export class GetProductDto {
   @ApiProperty({
@@ -44,9 +44,10 @@ export class GetProductDto {
   precio: number;
 
   @ApiProperty({
-    type: ETalle,
+    enum: Talle,
     description: 'Field talle',
     required: true,
   })
-  talle: ETalle;
+  @IsEnum(Talle)
+  talle: Talle;
 }
